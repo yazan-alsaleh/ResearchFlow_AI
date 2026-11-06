@@ -33,7 +33,7 @@ export default function CoverageStats() {
         },
       ]
     : [
-        { label: "Job ads", value: 63 },
+        { label: "Job ads", value: 69 },
         { label: "Companies", value: 21 },
         { label: "Sources", value: 1 },
         { label: "Job families", value: 17 },

@@ -3,6 +3,12 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from app.agents.skills.arabic import (
+    PREFERRED_CUES_AR,
+    REQUIRED_CUES_AR,
+    find_arabic_skill_mentions,
+    normalize_arabic,
+)
 from app.agents.skills.taxonomy import (
     SkillDefinition,
     find_skill_mentions,
@@ -61,9 +67,21 @@ def _sentence_at(spans: list[tuple[int, int, str]], position: int) -> str:
 def _importance(sentence: str) -> str:
     if any(cue in sentence for cue in REQUIRED_CUES):
         return "required"
+    if any(cue in sentence for cue in REQUIRED_CUES_AR):
+        return "required"
     if any(cue in sentence for cue in PREFERRED_CUES):
         return "preferred"
+    if any(cue in sentence for cue in PREFERRED_CUES_AR):
+        return "preferred"
     return "mentioned"
+
+
+def _sentence_containing(spans: list[tuple[int, int, str]], *needles: str) -> str:
+    for _start, _end, sentence in spans:
+        normalized = normalize_arabic(sentence.lower())
+        if any(needle in normalized or needle in sentence for needle in needles):
+            return sentence
+    return ""
 
 
 def _confidence(importance: str) -> float:
@@ -99,7 +117,9 @@ def _degree_extraction(text: str, spans: list[tuple[int, int, str]]) -> list[dic
 
 
 def _experience_extraction(text: str, spans: list[tuple[int, int, str]]) -> dict | None:
-    pattern = re.compile(r"(\d{1,2})\s*\+?\s*(?:years|yrs)", re.IGNORECASE)
+    pattern = re.compile(
+        r"(\d{1,2})\s*\+?\s*(?:years|yrs|سنوات|سنه|سنوات خبره)", re.IGNORECASE
+    )
     match = pattern.search(normalize_text(text))
     if not match:
         return None
@@ -131,25 +151,38 @@ def extract_deterministic(job: Job) -> dict:
     mentions = find_skill_mentions(job.description)
 
     by_skill: dict[str, dict] = {}
-    for skill, start, _end, _alias in mentions:
-        sentence = _sentence_at(spans, start)
+    rank = {"required": 3, "preferred": 2, "mentioned": 1}
+
+    def add_skill(name: str, category: str, skill_type: str, sentence: str) -> None:
         if not sentence:
-            continue
+            return
         importance = _importance(sentence)
-        quote = _trim_quote(sentence)
-        existing = by_skill.get(skill.name)
-        rank = {"required": 3, "preferred": 2, "mentioned": 1}
+        existing = by_skill.get(name)
         if existing and rank[existing["importance"]] >= rank[importance]:
-            continue
-        by_skill[skill.name] = {
-            "name": skill.name,
-            "canonical_name": skill.name,
-            "category": skill.category,
-            "skill_type": skill.skill_type,
+            return
+        by_skill[name] = {
+            "name": name,
+            "canonical_name": name,
+            "category": category,
+            "skill_type": skill_type,
             "importance": importance,
-            "evidence_quote": quote,
+            "evidence_quote": _trim_quote(sentence),
             "confidence": _confidence(importance),
         }
+
+    for skill, start, _end, _alias in mentions:
+        add_skill(skill.name, skill.category, skill.skill_type, _sentence_at(spans, start))
+
+    # Arabic mentions map to canonical English skills; the verbatim
+    # evidence quote stays in Arabic (surfaced with dir="auto" in the UI).
+    for canonical, _start, _end, alias in find_arabic_skill_mentions(job.description):
+        if canonical in by_skill:
+            continue
+        definition = match_canonical(canonical)
+        if definition is None:
+            continue
+        sentence = _sentence_containing(spans, alias, normalize_arabic(alias))
+        add_skill(canonical, definition.category, definition.skill_type, sentence)
 
     all_skills = sorted(
         by_skill.values(),

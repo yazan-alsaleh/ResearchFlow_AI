@@ -355,8 +355,8 @@ export default function ReportView({ reportId }: { reportId: string }) {
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 {selectedJobs.map((job) => (
                   <article key={job!.id} className="rounded-xl border border-line bg-white p-4">
-                    <p className="text-sm font-semibold text-ink">{job!.title}</p>
-                    <p className="mt-1 text-xs text-muted">
+                    <p className="text-sm font-semibold text-ink" dir="auto">{job!.title}</p>
+                    <p className="mt-1 text-xs text-muted" dir="auto">
                       {job!.company} · {job!.city ?? "Qatar"}
                       {job!.posted_at ? ` · ${job!.posted_at.slice(0, 10)}` : ""}
                     </p>

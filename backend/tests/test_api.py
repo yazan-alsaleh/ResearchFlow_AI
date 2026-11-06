@@ -25,7 +25,7 @@ async def test_coverage_reports_seeded_corpus(client):
     response = await client.get("/api/v1/meta/coverage")
     assert response.status_code == 200
     payload = response.json()
-    assert payload["total_jobs"] == 63
+    assert payload["total_jobs"] == 69
     assert payload["total_companies"] >= 10
     assert len(payload["by_family"]) >= 15
 

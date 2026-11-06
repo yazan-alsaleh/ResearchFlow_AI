@@ -35,6 +35,6 @@ describe("CoverageStats", () => {
         screen.getByText("Live coverage is unavailable. Start the API to load corpus statistics."),
       ).toBeInTheDocument(),
     );
-    expect(screen.getByText("63")).toBeInTheDocument();
+    expect(screen.getByText("69")).toBeInTheDocument();
   });
 });
