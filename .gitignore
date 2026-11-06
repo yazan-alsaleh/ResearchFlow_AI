@@ -30,6 +30,8 @@ node_modules/
 out/
 .turbo/
 coverage/
+test-results/
+playwright-report/
 *.tsbuildinfo
 npm-debug.log*
 pnpm-debug.log*

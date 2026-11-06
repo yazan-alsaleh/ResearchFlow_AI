@@ -16,6 +16,9 @@ echo "==> Frontend (frontend/)"
 cd "$ROOT/frontend"
 npm ci
 npm run typecheck
+npm run test
 npm run build
+# Optional, slower smoke tests (boots a production server; browsers needed):
+# npm run test:e2e
 
 echo "==> All checks passed"
