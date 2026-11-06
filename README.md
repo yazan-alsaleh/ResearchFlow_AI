@@ -64,6 +64,22 @@ Key design choices:
 
 ---
 
+## Testing
+
+### Landing Page
+![Landing Page](./assets/screenshots/landing_page.png)
+
+
+### Report
+
+![Report 1](./assets/screenshots/report_1.png)
+![Report 2](./assets/screenshots/report_2.png)
+
+### Learning Recommendations
+
+![Learning Recommendations](./assets/screenshots/learning_recommendtions.png)
+
+
 ## Quick start
 
 ### Prerequisites
