@@ -2,12 +2,22 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, status
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    Header,
+    HTTPException,
+    Request,
+    Response,
+    status,
+)
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_session
 from app.core.config import settings
+from app.core.rate_limit import build_limiter
 from app.db.models import Extraction, Report, Run, RunJob, RunStage
 from app.pipeline.orchestrator import run_pipeline
 from app.schemas.api import RunCreate, RunOut, RunProgress
@@ -15,6 +25,8 @@ from app.schemas.api import RunCreate, RunOut, RunProgress
 router = APIRouter(prefix="/runs", tags=["runs"])
 
 STAGES = ("collect", "dedupe", "extract", "aggregate", "report")
+
+limiter = build_limiter(settings)
 
 
 def _parse_uuid(value: str) -> uuid.UUID:
@@ -75,6 +87,8 @@ async def serialize_run(session: AsyncSession, run: Run) -> dict:
 async def create_run(
     payload: RunCreate,
     background_tasks: BackgroundTasks,
+    response: Response,
+    request: Request,
     session: AsyncSession = Depends(get_session),
     idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
 ) -> dict:
@@ -82,12 +96,29 @@ async def create_run(
     if not query:
         raise HTTPException(status_code=422, detail="Job title is required")
 
+    # Idempotent replays are free: return the existing run without consuming quota.
     if idempotency_key:
         existing = (
             await session.execute(select(Run).where(Run.idempotency_key == idempotency_key))
         ).scalar_one_or_none()
         if existing:
             return await serialize_run(session, existing)
+
+    if settings.rate_limit_enabled:
+        client_ip = request.client.host if request.client else "unknown"
+        # Rebuild limits if tests monkeypatched settings.
+        limiter.per_hour = settings.runs_per_hour_per_ip
+        limiter.per_day = settings.runs_per_day_per_ip
+        limiter.global_per_day = settings.runs_per_day_global
+        decision = limiter.check(client_ip)
+        for key, value in decision.headers.items():
+            response.headers[key] = value
+        if not decision.allowed:
+            raise HTTPException(
+                status_code=429,
+                detail="Run creation rate limit exceeded",
+                headers={"Retry-After": str(decision.retry_after or 60)},
+            )
 
     run = Run(
         query=query,
