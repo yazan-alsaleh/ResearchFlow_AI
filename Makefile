@@ -1,4 +1,4 @@
-.PHONY: dev down logs seed test lint eval
+.PHONY: dev down logs seed test lint eval check
 
 dev:
 	docker compose up --build
@@ -21,3 +21,7 @@ lint:
 
 eval:
 	cd backend && uv run python -m scripts.eval --write ../docs/evaluation/results.json
+
+# Local equivalent of GitHub Actions CI — must pass before every commit.
+check:
+	./check.sh
