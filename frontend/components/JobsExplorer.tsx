@@ -103,6 +103,7 @@ export default function JobsExplorer() {
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
             className="input sm:w-72"
+            aria-label="Search jobs"
             placeholder="Search title, company, description"
             value={query}
             onChange={(event) => setQuery(event.target.value)}

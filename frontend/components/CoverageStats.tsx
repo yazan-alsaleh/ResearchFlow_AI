@@ -33,10 +33,10 @@ export default function CoverageStats() {
         },
       ]
     : [
-        { label: "Job ads", value: 24 },
-        { label: "Companies", value: 14 },
+        { label: "Job ads", value: 63 },
+        { label: "Companies", value: 21 },
         { label: "Sources", value: 1 },
-        { label: "Job families", value: 15 },
+        { label: "Job families", value: 17 },
       ];
 
   return (
