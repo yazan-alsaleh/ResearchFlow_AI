@@ -3,9 +3,19 @@ import Nav from "@/components/Nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000",
+  ),
   title: "ResearchFlow AI — Qatar job market intelligence",
   description:
     "Evidence-backed analysis of Qatar job ads: skills demand, qualifications, and learning recommendations with cited sources.",
+  openGraph: {
+    siteName: "ResearchFlow AI",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
