@@ -16,6 +16,13 @@ test("typing a popular title fills the search input", async ({ page }) => {
   await expect(page.getByLabel("Enter a job title")).toHaveValue("Accountant");
 });
 
+test("unknown report page still has share metadata and an error state", async ({ page }) => {
+  await page.goto("/reports/00000000-0000-0000-0000-000000000000");
+  await expect(page).toHaveTitle(/ResearchFlow AI/);
+  await expect(page.getByRole("heading", { name: "Report unavailable" })).toBeVisible();
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary");
+});
+
 test("jobs and about pages render", async ({ page }) => {
   await page.goto("/jobs");
   await expect(page.getByLabel(/search/i).first()).toBeVisible();
