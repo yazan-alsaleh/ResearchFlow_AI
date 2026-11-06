@@ -15,6 +15,28 @@ def _pct(part: int, whole: int) -> float:
     return round((part / whole) * 100, 1) if whole else 0.0
 
 
+def build_cooccurrence(skill_list: list[dict], top_n: int = 10) -> dict[str, Any]:
+    """Pairwise co-occurrence of the top-N skills (Jaccard over job sets)."""
+    top = skill_list[:top_n]
+    names = [item["skill"] for item in top]
+    sets = {item["skill"]: set(item["job_ids"]) for item in top}
+    matrix: list[list[int]] = []
+    pairs: list[dict[str, Any]] = []
+    for i, a in enumerate(names):
+        row = []
+        for j, b in enumerate(names):
+            shared = len(sets[a] & sets[b])
+            row.append(shared)
+            if i < j and shared:
+                union = len(sets[a] | sets[b]) or 1
+                pairs.append(
+                    {"a": a, "b": b, "count": shared, "jaccard": round(shared / union, 4)}
+                )
+        matrix.append(row)
+    pairs.sort(key=lambda item: (item["count"], item["jaccard"]), reverse=True)
+    return {"skills": names, "matrix": matrix, "pairs": pairs[:15]}
+
+
 def _degree_level(value: str) -> str:
     lowered = value.lower()
     if "phd" in lowered or "doctorate" in lowered:
@@ -337,8 +359,12 @@ async def build_evidence_pack(run: Run, session: AsyncSession) -> dict[str, Any]
         )
     if len(sources) < 2:
         warnings.append("The corpus comes from a single source; source diversity is limited.")
-    if any(job.language != "en" for job in job_rows):
-        warnings.append("Some ads are not in English; Arabic extraction is a Phase 3 feature.")
+    arabic_jobs = sum(1 for job in job_rows if job.language == "ar")
+    if arabic_jobs:
+        warnings.append(
+            f"{arabic_jobs} ad(s) are in Arabic; extracted with Arabic alias mapping "
+            "and reported with per-language evaluation."
+        )
 
     corpus = {
         "jobs": len(job_ids),
@@ -368,6 +394,7 @@ async def build_evidence_pack(run: Run, session: AsyncSession) -> dict[str, Any]
             ),
         },
         "companies": company_list,
+        "cooccurrence": build_cooccurrence(skill_list),
         "degrees": degree_list,
         "certifications": cert_list,
         "languages": language_list,

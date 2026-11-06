@@ -157,7 +157,10 @@ def build_deterministic_report(run: Run, pack: dict[str, Any]) -> dict[str, Any]
             "Posting dates span "
             f"{corpus['date_range']['start']} to {corpus['date_range']['end']}."
         )
-    caveats.append("Only English-language extraction is enabled in the MVP.")
+    caveats.append(
+        "Extraction covers English and Arabic ads; Arabic results carry "
+        "per-language evaluation and thinner evidence."
+    )
 
     return {
         "title": f"{run.query} — Qatar Market Snapshot",
@@ -175,6 +178,7 @@ def build_deterministic_report(run: Run, pack: dict[str, Any]) -> dict[str, Any]
             "experience": pack.get("experience_details", []),
             "companies": pack.get("companies", [])[:8],
             "languages": pack.get("languages", []),
+            "cooccurrence": pack.get("cooccurrence", {"skills": [], "matrix": [], "pairs": []}),
         },
         "evidence_refs": pack.get("evidence_refs", []),
         "evidence_jobs": {job["id"]: job for job in pack.get("corpus_jobs", [])},

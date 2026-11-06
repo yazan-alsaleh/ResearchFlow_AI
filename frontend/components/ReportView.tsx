@@ -101,7 +101,9 @@ export default function ReportView({ reportId }: { reportId: string }) {
     experience: [],
     companies: [],
     languages: [],
+    cooccurrence: { skills: [], matrix: [], pairs: [] },
   };
+  insights.cooccurrence ??= { skills: [], matrix: [], pairs: [] };
   const topSkills = insights.top_skills ?? [];
   const maxJobs = Math.max(...topSkills.map((skill) => skill.jobs), 1);
   const selected = selectedRef ? refMap.get(selectedRef) : null;
@@ -289,6 +291,61 @@ export default function ReportView({ reportId }: { reportId: string }) {
             </ul>
           </section>
         </div>
+
+        {insights.cooccurrence.skills.length > 1 ? (
+          <section className="card mt-6 p-6 sm:p-8">
+            <h2 className="section-title">Skill co-occurrence</h2>
+            <p className="mt-1 text-sm text-muted">
+              Pairs that appear together in the same ads. Counts are shared ads; Jaccard measures
+              overlap relative to either skill alone.
+            </p>
+            <div className="mt-5 overflow-x-auto">
+              <table className="min-w-full text-left text-xs">
+                <thead>
+                  <tr>
+                    <th className="p-2 text-muted">Skill</th>
+                    {insights.cooccurrence.skills.map((name) => (
+                      <th key={name} className="p-2 font-medium text-muted" title={name}>
+                        {name.slice(0, 8)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {insights.cooccurrence.skills.map((name, i) => (
+                    <tr key={name} className="border-t border-line">
+                      <th className="p-2 font-medium text-ink">{name}</th>
+                      {insights.cooccurrence.matrix[i].map((count, j) => (
+                        <td
+                          key={`${name}-${insights.cooccurrence.skills[j]}`}
+                          className="p-2 text-center text-muted"
+                          style={{
+                            backgroundColor:
+                              count === 0
+                                ? undefined
+                                : `rgba(138, 21, 56, ${0.08 + (count / Math.max(insights.top_skills[0]?.jobs ?? 1, 1)) * 0.3})`,
+                          }}
+                        >
+                          {count}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <ul className="mt-4 space-y-1.5 text-sm">
+              {insights.cooccurrence.pairs.slice(0, 5).map((pair) => (
+                <li key={`${pair.a}-${pair.b}`} className="text-muted">
+                  <span className="font-semibold text-ink">
+                    {pair.a} + {pair.b}
+                  </span>{" "}
+                  — {pair.count} ads (Jaccard {pair.jaccard.toFixed(2)})
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <section className="card mt-6 p-6 sm:p-8">
           <h2 className="section-title">Learning recommendations</h2>
