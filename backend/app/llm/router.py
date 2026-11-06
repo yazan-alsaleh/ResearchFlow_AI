@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from app.core.config import settings
 from app.core.errors import LLMUnavailable
+from app.core.registry import primary_model
 from app.llm.base import LLMResponse
 from app.llm.gemini import GeminiProvider
 
@@ -31,10 +32,17 @@ class LLMRouter:
     def enabled(self) -> bool:
         return settings.llm_enabled and bool(settings.gemini_api_key)
 
-    def _model_for(self, task: str) -> str:
+    def model_for(self, task: str) -> str:
+        """Primary model for a task, from config/models.yaml routes."""
+        configured = primary_model(task, str(settings.config_dir))
+        if configured:
+            return configured
         if task == "report":
             return settings.gemini_report_model
         return settings.gemini_extraction_model
+
+    def _model_for(self, task: str) -> str:
+        return self.model_for(task)
 
     async def generate_json(
         self,

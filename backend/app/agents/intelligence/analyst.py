@@ -94,7 +94,7 @@ class IntelligenceAnalyst:
                             run_id=run.id,
                             stage="report",
                             provider="gemini",
-                            model=settings.gemini_report_model,
+                            model=self.router.model_for("report"),
                             prompt_version="report-v1",
                             status="fallback",
                             error_code="invalid_json",

@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     frontend_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
 
     seed_dir: Path = Field(default=ROOT_DIR / "data" / "seed")
+    config_dir: Path = Field(default=ROOT_DIR / "config")
     demo_mode: bool = True
     run_inline: bool = True
     max_jobs_per_run: int = 40

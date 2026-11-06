@@ -151,6 +151,12 @@ Copy `.env.example` to `.env`. The backend reads both the repository root `.env`
 | `ADMIN_TOKEN` | `change-me` | Required by `/api/v1/admin/*` |
 | `NEXT_PUBLIC_API_BASE_URL` | `http://localhost:8000` | API base URL used by the browser |
 
+Model IDs, routing chains, and budgets live in `config/models.yaml`; the
+source registry (policy status, robots/terms URLs, crawl delays) lives in
+`config/sources.yaml`. The backend validates both on load — routes that
+reference unknown models fail fast. Env vars above remain overrides for
+deployment secrets.
+
 **Never commit a real `.env`.** `opencode.json` is also ignored.
 
 ### LLM routing

@@ -1,0 +1,67 @@
+# Source registry (PLAN.md §4.2, §7). robots.txt is necessary, not sufficient:
+# every source needs a manually reviewed terms_url and policy_status before
+# automated collection. Prohibited: LinkedIn, Indeed, Bayt, GulfTalent,
+# Naukrigulf scraping without written permission (link-only or excluded).
+sources:
+  - slug: seed-corpus
+    name: Curated seed corpus
+    type: seed
+    base_url: https://example.com/seeds
+    domain: example.com
+    country: QA
+    terms_url: https://example.com/terms
+    robots_url: https://example.com/robots.txt
+    policy_status: approved
+    crawl_delay_ms: 0
+    max_rps: 10
+    attribution_required: false
+    enabled: true
+    metadata: {}
+
+  - slug: qatarenergy-careers
+    name: QatarEnergy Careers
+    type: career_page
+    base_url: https://www.qatarenergy.qa/en/Careers
+    domain: qatarenergy.qa
+    country: QA
+    terms_url: https://www.qatarenergy.qa/en/terms
+    robots_url: https://www.qatarenergy.qa/robots.txt
+    policy_status: review
+    crawl_delay_ms: 1000
+    max_rps: 1
+    attribution_required: true
+    enabled: false
+    metadata:
+      adapter: jsonld
+
+  - slug: qnb-careers
+    name: QNB Careers
+    type: career_page
+    base_url: https://www.qnb.com/en/careers
+    domain: qnb.com
+    country: QA
+    terms_url: https://www.qnb.com/en/terms
+    robots_url: https://www.qnb.com/robots.txt
+    policy_status: review
+    crawl_delay_ms: 1000
+    max_rps: 1
+    attribution_required: true
+    enabled: false
+    metadata:
+      adapter: jsonld
+
+  - slug: greenhouse-public
+    name: Greenhouse public boards
+    type: ats_api
+    base_url: https://boards-api.greenhouse.io/v1/boards
+    domain: boards-api.greenhouse.io
+    country: QA
+    terms_url: https://www.greenhouse.io/terms
+    robots_url: https://boards-api.greenhouse.io/robots.txt
+    policy_status: approved
+    crawl_delay_ms: 500
+    max_rps: 2
+    attribution_required: true
+    enabled: false
+    metadata:
+      adapter: greenhouse
