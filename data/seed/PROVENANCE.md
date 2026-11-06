@@ -6,7 +6,9 @@ labor market.
 
 ## What is in the corpus
 
-- 63 cross-sector job ads (`jobs.jsonl` + `jobs-extra.jsonl`; software/data,
+- 69 cross-sector job ads (`jobs.jsonl` + `jobs-extra.jsonl` +
+  `jobs-arabic.jsonl` — 6 Arabic-language ads for Phase 3 extraction
+  evaluation; software/data,
   finance, engineering, marketing, HR, healthcare, education, sales,
   administration, legal, logistics, project management, business, design,
   customer service, operations, procurement).

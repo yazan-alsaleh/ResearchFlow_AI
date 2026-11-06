@@ -1,9 +1,29 @@
 {
-  "cases": 24,
-  "skill_precision": 0.7459,
+  "cases": 30,
+  "skill_precision": 0.7869,
   "skill_recall": 1.0,
-  "skill_f1": 0.8545,
-  "importance_accuracy": 0.9919,
+  "skill_f1": 0.8807,
+  "importance_accuracy": 0.9809,
   "evidence_validity": 1.0,
-  "experience_mae_years": 0.0
+  "experience_mae_years": 0.0,
+  "by_language": {
+    "ar": {
+      "cases": 6,
+      "skill_precision": 1.0,
+      "skill_recall": 1.0,
+      "skill_f1": 1.0,
+      "importance_accuracy": 0.9394,
+      "evidence_validity": 1.0,
+      "experience_mae_years": 0.0
+    },
+    "en": {
+      "cases": 24,
+      "skill_precision": 0.7459,
+      "skill_recall": 1.0,
+      "skill_f1": 0.8545,
+      "importance_accuracy": 0.9919,
+      "evidence_validity": 1.0,
+      "experience_mae_years": 0.0
+    }
+  }
 }

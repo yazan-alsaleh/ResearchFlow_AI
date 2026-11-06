@@ -36,11 +36,13 @@ def load_jobs() -> dict[tuple[str, str], dict]:
 
 
 def load_gold() -> list[dict]:
-    return [
-        json.loads(line)
-        for line in GOLD_CASES.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    gold_dir = ROOT / "data" / "gold"
+    cases: list[dict] = []
+    for path in sorted(gold_dir.glob("cases*.jsonl")):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                cases.append(json.loads(line))
+    return cases
 
 
 def to_job(record: dict) -> Job:
@@ -76,9 +78,19 @@ def main() -> None:
             print(f"WARNING: seed job not found for gold case {gold_case}")
             continue
         predicted = extract_deterministic(to_job(record))
-        cases.append({"gold": gold_case["gold"], "predicted": predicted})
+        cases.append(
+            {
+                "gold": gold_case["gold"],
+                "predicted": predicted,
+                "language": gold_case.get("language", "en"),
+            }
+        )
 
     metrics = summarize(cases)
+    metrics["by_language"] = {
+        language: summarize([c for c in cases if c["language"] == language])
+        for language in sorted({c["language"] for c in cases})
+    }
     print(json.dumps(metrics, indent=2))
     if args.write:
         target = Path(args.write)
