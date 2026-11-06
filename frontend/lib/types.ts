@@ -92,6 +92,11 @@ export type ReportData = {
       experience: { bucket: string; jobs: number; evidence_ref: string }[];
       companies: { company: string; jobs: number; evidence_ref: string }[];
       languages: { name: string; jobs: number; evidence_ref: string }[];
+      cooccurrence: {
+        skills: string[];
+        matrix: number[][];
+        pairs: { a: string; b: string; count: number; jaccard: number }[];
+      };
     };
     evidence_refs: EvidenceRef[];
     evidence_jobs: Record<string, EvidenceJob>;
