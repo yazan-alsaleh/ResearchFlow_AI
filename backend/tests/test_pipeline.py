@@ -9,7 +9,7 @@ from app.pipeline.orchestrator import Orchestrator
 
 async def test_seed_corpus_is_cross_sector(seeded_session):
     session = seeded_session
-    assert await session.scalar(select(func.count()).select_from(Job)) == 24
+    assert await session.scalar(select(func.count()).select_from(Job)) == 63
     families = (
         await session.execute(select(Job.job_family).distinct())
     ).scalars().all()

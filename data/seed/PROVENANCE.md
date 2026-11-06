@@ -6,8 +6,9 @@ labor market.
 
 ## What is in the corpus
 
-- 24 cross-sector job ads (software/data, finance, engineering, marketing, HR, healthcare,
-  education, sales, administration, legal, logistics, project management, business, design,
+- 63 cross-sector job ads (`jobs.jsonl` + `jobs-extra.jsonl`; software/data,
+  finance, engineering, marketing, HR, healthcare, education, sales,
+  administration, legal, logistics, project management, business, design,
   customer service, operations, procurement).
 - Company names are real Qatari organizations, but the ads, salary ranges, and URLs are
   illustrative. URL paths use a `seed=` parameter that is stripped during canonicalization.

@@ -227,7 +227,7 @@ curl http://localhost:8000/api/v1/meta/coverage
   requirement, crawl delay, and fetch history.
 - Reports state snapshot vs trend limits, salary coverage, source diversity, and language coverage.
 
-The MVP corpus in `data/seed/jobs.jsonl` is **sample fixture data**. The 24 ads and salary ranges are
+The MVP corpus in `data/seed/jobs.jsonl` (+ `jobs-extra.jsonl`) is **sample fixture data**. The 63 ads and salary ranges are
 illustrative, and the URLs use an illustrative `job=` parameter. See
 [`data/seed/PROVENANCE.md`](data/seed/PROVENANCE.md). Do not present seed reports as live market
 measurements.

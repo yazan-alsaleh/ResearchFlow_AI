@@ -26,10 +26,12 @@ GOLD_CASES = ROOT / "data" / "gold" / "cases.jsonl"
 
 def load_jobs() -> dict[tuple[str, str], dict]:
     jobs = {}
-    for line in SEED_JOBS.read_text(encoding="utf-8").splitlines():
-        if line.strip():
-            record = json.loads(line)
-            jobs[(record["title"], record["company"])] = record
+    seed_dir = ROOT / "data" / "seed"
+    for path in sorted(seed_dir.glob("jobs*.jsonl")):
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                record = json.loads(line)
+                jobs[(record["title"], record["company"])] = record
     return jobs
 
 
