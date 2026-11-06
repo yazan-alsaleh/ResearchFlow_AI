@@ -18,3 +18,6 @@ test:
 lint:
 	docker compose exec api uv run ruff check .
 	docker compose exec api uv run mypy app
+
+eval:
+	cd backend && uv run python -m scripts.eval --write ../docs/evaluation/results.json
