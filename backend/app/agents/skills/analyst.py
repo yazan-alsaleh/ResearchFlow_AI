@@ -105,7 +105,7 @@ class SkillsAnalyst:
                                     run_id=run.id,
                                     stage="extraction",
                                     provider="gemini",
-                                    model=settings.gemini_extraction_model,
+                                    model=self.router.model_for("extraction"),
                                     prompt_version="skills-v1",
                                     status="fallback",
                                     error_code="provider_unavailable",

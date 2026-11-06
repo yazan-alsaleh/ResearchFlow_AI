@@ -1,0 +1,58 @@
+# Model routing and fallback (PLAN.md §6). Model IDs are configuration, not code.
+# Verify current Gemini model names and free-tier limits at build time.
+providers:
+  gemini:
+    type: gemini
+    api_key_env: GEMINI_API_KEY
+    limits:
+      rpm: 10
+      rpd: 250
+      concurrency: 3
+  ollama:
+    type: openai_compatible
+    base_url: http://localhost:11434/v1
+    model: qwen3:4b
+    limits:
+      concurrency: 1
+
+models:
+  gemini-2.5-flash-lite:
+    provider: gemini
+    capabilities: [json_schema, long_context]
+    context_window: 1000000
+  gemini-2.5-flash:
+    provider: gemini
+    capabilities: [json_schema, long_context]
+    context_window: 1000000
+  qwen3:4b:
+    provider: ollama
+    capabilities: [json_mode]
+    context_window: 32768
+
+routes:
+  extraction:
+    chain: [gemini-2.5-flash-lite, gemini-2.5-flash, qwen3:4b]
+    temperature: 0
+    max_output_tokens: 2500
+    timeout_s: 45
+    retries: 2
+    repair_attempts: 1
+  normalization:
+    chain: [gemini-2.5-flash-lite, qwen3:4b]
+    temperature: 0
+  report:
+    chain: [gemini-2.5-flash, gemini-2.5-flash-lite, qwen3:4b]
+    temperature: 0.2
+    max_output_tokens: 4000
+  judge:
+    chain: [qwen3:4b, gemini-2.5-flash]
+    temperature: 0
+
+budgets:
+  per_run:
+    max_llm_calls: 60
+    max_tokens: 150000
+    max_wall_clock_s: 180
+  daily:
+    max_llm_calls: 800
+    max_cost_usd: 0
