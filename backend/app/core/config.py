@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     admin_token: str = "change-me"
     sentry_dsn: str | None = None
 
+    live_collection_enabled: bool = False
+    live_fetch_timeout_s: float = 10.0
+
     rate_limit_enabled: bool = True
     runs_per_hour_per_ip: int = 3
     runs_per_day_per_ip: int = 10
