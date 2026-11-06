@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fbf8f3;
+  color: #1f2328;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+::selection {
+  background: #8a1538;
+  color: #fff;
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .card {
+    @apply rounded-2xl border border-line bg-white shadow-card;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .badge-live {
+    @apply border-emerald-200 bg-emerald-50 text-emerald-700;
+  }
+
+  .badge-cached {
+    @apply border-amber-200 bg-amber-50 text-amber-700;
+  }
+
+  .badge-verified {
+    @apply border-emerald-200 bg-emerald-50 text-emerald-700;
+  }
+
+  .badge-partial {
+    @apply border-amber-200 bg-amber-50 text-amber-700;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-maroon px-5 py-3 text-sm font-semibold text-white transition hover:bg-maroon-dark focus:outline-none focus:ring-2 focus:ring-maroon focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-maroon/30 hover:text-maroon focus:outline-none focus:ring-2 focus:ring-maroon focus:ring-offset-2;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-line bg-white px-4 py-3 text-base text-ink outline-none transition placeholder:text-muted/70 focus:border-maroon focus:ring-2 focus:ring-maroon/15;
+  }
+
+  .evidence-chip {
+    @apply inline-flex items-center rounded-md border border-maroon/20 bg-maroon/5 px-1.5 py-0.5 font-mono text-[11px] font-medium text-maroon transition hover:bg-maroon/10;
+  }
+
+  .bar-track {
+    @apply h-3 w-full overflow-hidden rounded-full bg-sand;
+  }
+
+  .bar-fill {
+    @apply h-full rounded-full bg-maroon;
+  }
+
+  .bar-fill-preferred {
+    @apply h-full rounded-full bg-maroon/35;
+  }
+
+  .section-title {
+    @apply text-lg font-semibold tracking-tight text-ink;
+  }
+
+  .subtle-grid {
+    background-image:
+      linear-gradient(to right, rgba(138, 21, 56, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(138, 21, 56, 0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+}
+
+@media print {
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+  .card {
+    box-shadow: none;
+    border-color: #ddd;
+  }
+}
