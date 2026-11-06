@@ -1,9 +1,9 @@
 {
-  "cases": 8,
-  "skill_precision": 0.5067,
+  "cases": 24,
+  "skill_precision": 0.7459,
   "skill_recall": 1.0,
-  "skill_f1": 0.6726,
-  "importance_accuracy": 0.9767,
+  "skill_f1": 0.8545,
+  "importance_accuracy": 0.9919,
   "evidence_validity": 1.0,
   "experience_mae_years": 0.0
 }
