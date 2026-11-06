@@ -6,6 +6,7 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.agents.collector.live import LiveCollector
 from app.agents.collector.seed import SeedCollector
 from app.agents.intelligence.analyst import IntelligenceAnalyst
 from app.agents.intelligence.evidence import build_evidence_pack
@@ -38,7 +39,13 @@ class Orchestrator:
 
         try:
             await self._start(session, run, "collect")
+            # Live collection is best-effort: it can only add jobs, never
+            # fail the run. The seeded corpus (SeedCollector) is the fallback.
+            live_stats = await LiveCollector().collect(run, session)
             collect_stats = await SeedCollector().collect(run, session)
+            collect_stats = {**collect_stats, "live": live_stats}
+            warnings = [*collect_stats.get("warnings", []), *live_stats.get("warnings", [])]
+            collect_stats["warnings"] = warnings
             run.stats = {**(run.stats or {}), "collect": collect_stats}
             await self._finish(session, run, "collect", collect_stats)
 
