@@ -41,7 +41,9 @@ class Settings(BaseSettings):
     live_collection_enabled: bool = False
     live_fetch_timeout_s: float = 10.0
 
-    rate_limit_enabled: bool = True
+    # Unlimited by default (local use). Set RATE_LIMIT_ENABLED=true
+    # and the limits below when deploying the public demo.
+    rate_limit_enabled: bool = False
     runs_per_hour_per_ip: int = 3
     runs_per_day_per_ip: int = 10
     runs_per_day_global: int = 100
