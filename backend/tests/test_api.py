@@ -7,6 +7,20 @@ async def test_health(client):
     assert response.json()["status"] == "ok"
 
 
+async def test_root_health_alias_used_by_docker_healthcheck(client):
+    # Dockerfile / docker-compose healthchecks hit /health, not /api/v1/health.
+    response = await client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok", "service": "ResearchFlow AI"}
+
+
+async def test_ready_and_root_ready_alias(client):
+    for path in ("/api/v1/ready", "/ready"):
+        response = await client.get(path)
+        assert response.status_code == 200
+        assert response.json() == {"status": "ready", "database": "ok"}
+
+
 async def test_coverage_reports_seeded_corpus(client):
     response = await client.get("/api/v1/meta/coverage")
     assert response.status_code == 200

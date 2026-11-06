@@ -43,15 +43,18 @@ async def root() -> dict:
         "name": settings.app_name,
         "version": "0.1.0",
         "docs": "/docs",
-        "health": "/api/v1/health",
+        "health": "/health",
+        "api_health": "/api/v1/health",
     }
 
 
+@app.get("/health")
 @app.get("/api/v1/health")
 async def health() -> dict:
     return {"status": "ok", "service": settings.app_name}
 
 
+@app.get("/ready")
 @app.get("/api/v1/ready")
 async def ready(session: AsyncSession = Depends(get_session)) -> dict:
     await session.execute(text("SELECT 1"))
