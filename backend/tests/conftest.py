@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from sqlalchemy.pool import StaticPool
 
 from app.api.deps import get_session
+from app.api.v1.runs import limiter
 from app.core.config import settings
 from app.db import models  # noqa: F401 - register models with metadata
 from app.db.base import Base
@@ -37,6 +38,7 @@ async def seeded_session(session):
 @pytest_asyncio.fixture
 async def client(seeded_session, monkeypatch):
     monkeypatch.setattr(settings, "run_inline", False)
+    limiter.reset()
 
     async def override():
         yield seeded_session

@@ -37,6 +37,11 @@ class Settings(BaseSettings):
     admin_token: str = "change-me"
     sentry_dsn: str | None = None
 
+    rate_limit_enabled: bool = True
+    runs_per_hour_per_ip: int = 3
+    runs_per_day_per_ip: int = 10
+    runs_per_day_global: int = 100
+
     @property
     def cors_origins(self) -> list[str]:
         return [origin.strip() for origin in self.frontend_origins.split(",") if origin.strip()]
